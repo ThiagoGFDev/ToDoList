@@ -11,7 +11,7 @@ import androidx.room.RoomDatabase
 )
 abstract class ToDoDatabase : RoomDatabase() {
 
-    abstract val dao: ToDoDao
+    abstract val toDoDao: ToDoDao
 }
 
 object ToDoDatabaseProvider {
