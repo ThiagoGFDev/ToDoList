@@ -52,11 +52,16 @@ class AddEditViewModel(
     private fun saveToDo() {
         viewModelScope.launch {
             if (title.isBlank()) {
-                _uiEvent.send(UiEvent.ShowSnackbar("O título não pode estar em branco"))
+                _uiEvent.send(UiEvent.ShowSnackbar("O título não pode estar em branco!"))
                 return@launch
             }
-
-            repository.insert(title, description, id)
+            if (id != null) {
+                repository.insert(title, description, id)
+                _uiEvent.send(UiEvent.ShowSnackbar("Tarefa editada!"))
+            } else {
+                repository.insert(title, description)
+                _uiEvent.send(UiEvent.ShowSnackbar("Tarefa criada!"))
+            }
             _uiEvent.send(UiEvent.NavigateBack)
         }
     }

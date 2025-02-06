@@ -11,10 +11,13 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,6 +49,9 @@ fun ListScreen(
     }
 
     val toDos by viewModel.toDos.collectAsState()
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { uiEvent ->
@@ -61,7 +67,9 @@ fun ListScreen(
 
                 }
                 is UiEvent.ShowSnackbar -> {
-
+                    snackbarHostState.showSnackbar(
+                        message = uiEvent.message,
+                    )
                 }
             }
         }
@@ -69,6 +77,7 @@ fun ListScreen(
 
     ListContent(
         todos = toDos,
+        snackbarHostState = snackbarHostState,
         onEvent = viewModel::onEvent
     )
 }
@@ -76,6 +85,7 @@ fun ListScreen(
 @Composable
 fun ListContent(
     todos: List<ToDo>,
+    snackbarHostState: SnackbarHostState,
     onEvent: (ListEvent) -> Unit,
 ) {
     Scaffold(
@@ -85,6 +95,9 @@ fun ListContent(
             }) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         }
     ) { paddingValues ->
         LazyColumn(
@@ -124,6 +137,7 @@ private fun ListScreenPreview() {
                 todo3,
             ),
             onEvent = {},
+            snackbarHostState = SnackbarHostState()
         )
     }
 }

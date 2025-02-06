@@ -44,6 +44,7 @@ class ListViewModel(
     private fun delete(id: Long) {
         viewModelScope.launch {
             repository.delete(id)
+            _uiEvent.send(UiEvent.ShowSnackbar("Tarefa removida com sucesso!"))
         }
     }
 
